@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            text-align: center;
+            padding: 50px;
+            color: #333;
+            margin: 0;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .container {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            margin: auto;
+            animation: fadeIn 2s ease-in-out;
+        }
+        h2 {
+            color: white;
+            font-size: 2em;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        input {
+            width: 80%;
+            padding: 15px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background: #00f2fe;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #00c4cc;
+        }
+        .weather-info {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .weather-info h3 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .weather-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .weather-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            animation: fadeIn 2s ease-in-out;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Weather App</h2>
+        <input type="text" id="city" placeholder="Enter city name">
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="weather-info" id="weatherInfo"></div>
+    </div>
+
+    <script>
+        async function getWeather() {
+            const city = document.getElementById('city').value;
+            if (!city) {
+                alert('Please enter a city name');
+                return;
+            }
+            
+            // Correct WeatherAPI URL format
+            const url = `http://api.weatherapi.com/v1/current.json?key=7d1eab060c724c6cb25153426250302&q=${city}&aqi=yes`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('City not found');
+                }
+                const data = await response.json();
+                document.getElementById('weatherInfo').innerHTML = `
+                    <h3>${data.location.name}, ${data.location.country}</h3>
+                    <p>Temperature: ${data.current.temp_c}°C</p>
+                    <p>Weather: ${data.current.condition.text}</p>
+                    <p>Humidity: ${data.current.humidity}%</p>
+                    <p>Wind Speed: ${data.current.wind_kph} km/h</p>
+                    <p>Air Quality Index: ${data.current.air_quality["us-epa-index"] || 'N/A'}</p>
+                `;
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        
+    </script>
+</body>
+</html>
