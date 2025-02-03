@@ -10,24 +10,18 @@
             to { opacity: 1; }
         }
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-20px);
-            }
-            60% {
-                transform: translateY(-10px);
-            }
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
         }
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
             text-align: center;
             padding: 50px;
             color: #333;
             margin: 0;
             animation: fadeIn 2s ease-in-out;
+            background: var(--background-color, linear-gradient(to right, #4facfe, #00f2fe));
         }
         .container {
             max-width: 500px;
@@ -58,7 +52,7 @@
             padding: 12px 25px;
             border: none;
             border-radius: 5px;
-            background: #00f2fe;
+            background: #14a6ad;
             color: white;
             font-size: 16px;
             cursor: pointer;
@@ -91,11 +85,47 @@
             margin: 0 auto 15px;
             animation: fadeIn 2s ease-in-out;
         }
+        .toggle-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .dark-mode {
+            --background-color: #333;
+            --text-color: white;
+        }
+        .dark-mode body {
+            background: var(--background-color, #333);
+            color: var(--text-color, white);
+        }
+        .dark-mode .container {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode h2, .dark-mode h3 {
+            color: var(--text-color, white);
+        }
+        .dark-mode input {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-color, white);
+        }
+        .dark-mode .weather-info {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-color, white);
+        }
+        .dark-mode .weather-info p {
+            color: white; /* Change the color for dark mode */
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
 </head>
 <body>
+    <div class="toggle-switch">
+        <label>
+            <input type="checkbox" id="themeToggle">
+            <span>Dark Mode</span>
+        </label>
+    </div>
     <div class="container">
         <h2>Weather App</h2>
         <input type="text" id="city" placeholder="Enter city name">
@@ -104,6 +134,11 @@
     </div>
 
     <script>
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
         async function getWeather() {
             const city = document.getElementById('city').value;
             if (!city) {
@@ -121,19 +156,17 @@
                 }
                 const data = await response.json();
                 document.getElementById('weatherInfo').innerHTML = `
-                    <h3>${data.location.name}, ${data.location.country}</h3>
-                    <p>Temperature: ${data.current.temp_c}°C</p>
-                    <p>Weather: ${data.current.condition.text}</p>
-                    <p>Humidity: ${data.current.humidity}%</p>
-                    <p>Wind Speed: ${data.current.wind_kph} km/h</p>
-                    <p>Air Quality Index: ${data.current.air_quality["us-epa-index"] || 'N/A'}</p>
-                `;
+                <h3>${data.location.name}, ${data.location.country}</h3>
+                <p>Temperature: ${data.current.temp_c}°C</p>
+                <p>Weather: ${data.current.condition.text}</p>
+                <p>Humidity: ${data.current.humidity}%</p>
+                <p>Wind Speed: ${data.current.wind_kph} km/h</p>
+                <p>Air Quality Index: ${data.current.air_quality["us-epa-index"] || 'N/A'}</p>
+            `;
             } catch (error) {
                 alert(error.message);
             }
         }
-
-        
     </script>
 </body>
 </html>
